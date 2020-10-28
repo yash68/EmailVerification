@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -52,8 +52,15 @@ def mylogin(request):
 		user = authenticate(username = username, password = password)
 		if user is not None:
 			login(request, user)
-			return HttpResponse("You are now Logged In")
+			return redirect('dashboard')
 		else:
 			return HttpResponse("Wrong Credentials or you havent verified your email address yet")
 	else:
 		return render(request, 'login.html')
+
+def signout(request):
+    logout(request)
+    return redirect('/')
+
+def dashboard(request):
+	return render(request, "dashboard.html", {'username' : request.user })
